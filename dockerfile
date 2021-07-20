@@ -1,10 +1,4 @@
 FROM alpine
-
-COPY ./nginx.conf /etc/nginx/nginx.conf
-
-
-COPY ./codeserver.conf /etc/nginx/conf.d/default.conf
-
 WORKDIR /app
 
 RUN apk update && apk add --no-cache \
@@ -17,7 +11,8 @@ RUN apk update && apk add --no-cache \
 
 COPY ./vscode.sh /app/vscode.sh
 RUN sh /app/vscode.sh
-COPY /server .
+COPY ./config.codeserver.yaml /root/.config/code-server/config.yaml
+COPY ./server .
 
 EXPOSE 80
 # nginx port
@@ -26,8 +21,9 @@ EXPOSE 8080
 EXPOSE 3000
 # node port
 
+COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./codeserver.conf /etc/nginx/conf.d/default.conf
+COPY ./supervisord.conf /etc/supervisord.conf
 
-
-COPY supervisord.conf /etc/supervisord.conf
 ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
-# ENTRYPOINT [ "sh", "/app/start.sh" ]
+
