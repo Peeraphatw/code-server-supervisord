@@ -1,0 +1,10 @@
+version: '3'
+services:
+  supervisord-codesever:
+    container_name: supervisord
+    build: ./supervisord
+    ports:
+      - '80:80'
+    environment:
+      - NGINX_APP_TYPE=NODE_APPLICATION
+      - CODE_SERVER_PASSWORD=1234
